@@ -1,25 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import ComA from './components/ComA'
+import ComD from './components/ComD'
 
-function App() {
+const App = () => {
+  const [arr,setArr]= useState([1,2,3,4,5,6]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+    <ComA previousData = {arr} changFn ={setArr}/>
+    <ComD data={arr}/>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
