@@ -1,14 +1,26 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { BrowserRouter as Router ,Routes,Route,Switch,Link} from 'react-router-dom'
 import ComA from './components/ComA'
-import ComD from './components/ComD'
-import DataComp from './components/DataComp';
+import ComB from './components/ComB'
+
+
 
 const App = () => {
-  const [arr,setArr]= useState([1,2,3,4,5,6]);
   return (
-    <div>
-    <DataComp/>
-    </div>
+    <>
+    <Router> 
+    <nav>
+    <button> <Link to="/">Home</Link> </button>
+    <button> <Link to="/about">About</Link> </button>
+    <button> <Link to="/contact">Cantact us</Link> </button>
+    </nav>
+    <Routes>
+    <Route path='/' element={<ComA/>}/>
+    <Route path='/about' element={<ComB/>}/>
+    </Routes> 
+    </Router>
+    <footer><h1>this is footer</h1></footer>
+    </>
   )
 }
 

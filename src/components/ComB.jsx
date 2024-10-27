@@ -1,15 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useParams } from 'react-router-dom'
 
-const ComB = ({piyush,rahul}) => {
-    const [inputV,setInputV] = useState('');
-    const handleSubmit = () =>{
-        piyush([...rahul, inputV])
-    }
+const ComB = () => {
+    let data=useParams();
+    console.log(data);
+    
   return (
-    <div>ComB
-    <input type='text' placeholder='enter some value' value={inputV} onChange={(e)=>setInputV(e.target.value)} ></input>
-    <button onClick ={handleSubmit}>submit </button>
-    </div>
+    <div>welcome here {data.name}</div>
   )
 }
 

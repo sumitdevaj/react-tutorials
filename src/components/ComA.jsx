@@ -4,11 +4,9 @@ import ComC from './ComC'
 
 const ComA = ({changFn,previousData}) => {
   return (
-    <div>ComA
-    <h6>inside COMA</h6>
-    <ComB piyush={changFn} rahul={previousData}  />
-    <ComC/>
-    </div>
+    <>
+    <h1>this is home compA </h1>
+    </>
   )
 }
 
