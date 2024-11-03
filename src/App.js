@@ -9,6 +9,7 @@ const App = () => {
   return (
     <>
     <Router> 
+    <h1>jbnksfgnoxknbgldkgneakl</h1>
     <nav>
     <button> <Link to="/">Home</Link> </button>
     <button> <Link to="/about">About</Link> </button>
@@ -17,6 +18,7 @@ const App = () => {
     <Routes>
     <Route path='/' element={<ComA/>}/>
     <Route path='/about' element={<ComB/>}/>
+    <Route path='*' element={<ComB/>}/>
     </Routes> 
     </Router>
     <footer><h1>this is footer</h1></footer>

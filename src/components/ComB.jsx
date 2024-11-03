@@ -6,7 +6,7 @@ const ComB = () => {
     console.log(data);
     
   return (
-    <div>welcome here {data.name}</div>
+    <div>page not found</div>
   )
 }
 
