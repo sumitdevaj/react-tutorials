@@ -13,7 +13,6 @@ const Shop = () => {
     <h1>{count}</h1>
     {data && data.map((val)=>{return (<>
         <ShopCard data={val}/>
-        
         </>)})}
     </div>
   )
