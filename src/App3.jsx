@@ -7,6 +7,7 @@ import CounterReduce from './components/CounterReduce';
 import { Provider } from 'react-redux';
 import store from './store';
 import LoginPage from './components/LoginPage';
+import StoreProduct from './components/product/StoreProduct';
 
 
 
@@ -20,11 +21,12 @@ import LoginPage from './components/LoginPage';
 //     </AuthProvider>
 //   )
 // }
+// 
 const App3 = () => {
   return (
     <Provider store={store}>
     <div>
-        <LoginPage/>
+        <StoreProduct/>
     </div>
     </Provider>
   )
