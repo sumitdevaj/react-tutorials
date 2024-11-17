@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import LoginPage from './components/LoginPage';
 import StoreProduct from './components/product/StoreProduct';
+import { Router } from 'react-router-dom';
 
 
 
@@ -25,9 +26,9 @@ import StoreProduct from './components/product/StoreProduct';
 const App3 = () => {
   return (
     <Provider store={store}>
-    <div>
+    
         <StoreProduct/>
-    </div>
+    
     </Provider>
   )
 }
