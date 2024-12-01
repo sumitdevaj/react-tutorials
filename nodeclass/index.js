@@ -2,6 +2,10 @@ const fs = require('fs');
 const os = require('os');
 const p = require('path');
 const http = require('http');
+const ejs = require('ejs');
+
+const templatePath = './views/index.ejs'
+
 
 // // let file= fs.writeFileSync('mytext.txt',"klmlkmfjlnweklnebwlgamenblwkeam");
 // // console.log(file);
@@ -101,6 +105,8 @@ const http = require('http');
 
 // console.log(p.join(__dirname,'../first.html'))
 let htmlFile = p.join(__dirname,'../first.html')
+console.log(__dirname,"fjnkj");
+
 const server = http.createServer((req,res)=>{
     const url = req.url;
     console.log(url ,"qquhuq");
@@ -120,6 +126,18 @@ const server = http.createServer((req,res)=>{
     if(url === '/'){
         res.writeHead(200,{'Content-Type':'text/plain'});
         res.end('welcome to the home page')
+    }
+    if(url === '/dynamic'){
+        fs.readFile(templatePath, 'utf8', (err,data)=>{
+            if(err){
+                res.writeHead(500,{'Content-Type': 'text/plain'});
+                res.end("error in loading template")
+            }
+            const renderHtml =ejs.render(data,{title:"hello world",message:"hello piyush"})
+            res.writeHead(200,{'Content-Type':'text/html'})
+            res.end(renderHtml)
+
+        })
     }
     
     
