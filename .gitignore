@@ -24,3 +24,4 @@ yarn-error.log*
 
 nodeclass/node_modules
 expressApi/node_modules
+authapi/node_modules
