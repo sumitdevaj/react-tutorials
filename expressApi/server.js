@@ -4,13 +4,26 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const app = express();
 const validator = require('validator');
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
 const port =4000;
 
+
+
+
+cloudinary.config({
+    cloud_name: 'dzw8ygh5x',
+    api_key: 496711411842363,
+    api_secret: 'm-GvvCDAQbxjaegq2Vm0rNWyDrE'
+  });
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 let users = [];
 let items= [];
 let idCounter = 1;
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }).single('file');
 
 
 const jwt_secret ="fekdsnjsnvrkjesnbkjadbnejkwdbjkadkjadjksdk";
@@ -46,6 +59,50 @@ const adminAuth = (req, res, next) => {
         next();
     })
 }
+
+app.post('/upload', upload, async (req, res) => {
+    try {
+      console.log('Form Data:', req.body,req.body?.file);  // Logs non-file form data (from Body-parser)
+      console.log('Uploaded File:', req.file);  // Logs the file data (from Multer)
+  
+      // Example: req.body.title would be available if you sent a 'title' field in your form
+      const title = req.body.title;
+  
+      if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+      }
+  
+      // Upload the file to Cloudinary
+      const result =await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { resource_type: 'auto' },
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+        uploadStream.end(req.file.buffer);  // Pass the file buffer to Cloudinary
+      });
+      let dd = await result
+      console.log(dd,"ssssssssss");
+      
+      // Send the response once the file is uploaded
+      res.json({
+        message: 'File uploaded successfully',
+        title: title,
+        imageUrl: dd
+      });
+  
+    } catch (error) {
+      // Catch and handle any errors
+      console.error(error);
+      res.status(500).send('Error uploading file: ' + error.message);
+    }
+  });
+  
 app.post('/signup', async (req, res) => {
     try {
         const { userName, email,password,mobile } = req.body;

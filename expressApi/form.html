@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file" />
+        <input type="text" name="title" placeholder="Enter Image Title" />
+        <button type="submit">Upload</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            const fileInput = document.getElementById('fileInput'); // Get the file input element
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]); // Append the selected file to form data
+            formData.append('title', form.elements['title'].value); // Append the title field to form data
+
+            // Send the form data to the server using fetch
+            fetch('http://localhost:4000/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => console.log('Upload Success:', data))
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+
+</html>
