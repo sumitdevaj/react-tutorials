@@ -14,6 +14,17 @@
         <button type="submit">Upload</button>
     </form>
 
+    <form id="uploadForm2" enctype="multipart/form-data">
+        <!-- <input type="file" id="fileInput" name="file" />
+        <input type="text" name="title" placeholder="Enter Image Title" /> -->
+        <label for="name">Enter Your Name:</label><input type="text" placeholder="Enter your name"> <br>
+        <label for="number">Enter Your Phone Number:</label><input type="tel" placeholder="Enter your phone number"><br>
+        <label for="email">Enter Your Email:</label><input type="email" placeholder="Enter your email"><br>
+        <label for="source">Enter Source:</label><input type="text" placeholder="Enter source"><br>
+        <label for="time">Enter Time:</label><input type="time" ><br>
+        <button type="submit">Upload</button>
+    </form>
+
     <script>
         const form = document.getElementById('uploadForm');
         form.addEventListener('submit', function(event) {
@@ -33,6 +44,8 @@
             .then(data => console.log('Upload Success:', data))
             .catch(error => console.error('Error:', error));
         });
+        const form2 = document.getElementById(`upload2`);
+
     </script>
 </body>
 

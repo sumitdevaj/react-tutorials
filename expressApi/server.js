@@ -6,8 +6,22 @@ const app = express();
 const validator = require('validator');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
+const nodemailer = require('nodemailer');
 const port =4000;
+require('dotenv').config()
+console.log(process.env.HELLO);
 
+
+
+let transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465, // Use port 465 for SSL
+    secure: true, // Use SSL
+    auth: {
+        user: 'preetam@dice-academy.com',
+        pass: ''
+    }
+});
 
 
 
@@ -241,6 +255,28 @@ app.get('/itemDelete',(req,res)=>{
     console.log(newData);
     res.json({status:true, mesage:'item deleted'})
     
+})
+
+app.post('/sendEmail',async (req, res) => {
+    try{
+        let mailOptions = {
+            from: 'preetam@dice-academy.com',  // Sender's address
+            to: req.body.email,   // Recipient's address
+            subject: 'new customer added/enqiure',         // Email subject
+            text: 'welcome to our website',  // Plain text body
+            html: '<p>Hello, this is a <strong>test email</strong> from Node.js using Nodemailer and Gmail.</p>'  // HTML body
+          };
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              return console.log('Error occurred:', error);
+            }
+            console.log('Message sent: %s', info.messageId);
+          });
+
+    }
+    catch(err){
+
+    }
 })
 app.listen(port,()=>{
     console.log(`server listening on ${port}`);
