@@ -7,9 +7,35 @@ const validator = require('validator');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const nodemailer = require('nodemailer');
+const twilio = require('twilio');
 const port =4000;
 require('dotenv').config()
 console.log(process.env.HELLO);
+const Product = require("./model/product.model")
+
+const accountSid = 'AC35e18f33978a1a53723b5c8b6e58dccb';
+const authToken = '244e2846922729add71756793aeb0e56';
+const client = twilio(accountSid, authToken);
+
+const mongoose = require('mongoose');
+
+const connectDb = async ()=>{
+    try{
+        await mongoose.connect('mongodb+srv://preetam:preetam@cluster0.wg3g3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0',{
+            useNewUrlParser:true
+        })
+        console.log(`mongo db connected successfully`);
+        
+
+    }
+    catch(err){
+        console.log(err);
+        
+    }
+}
+connectDb()
+
+
 
 
 
@@ -116,6 +142,27 @@ app.post('/upload', upload, async (req, res) => {
       res.status(500).send('Error uploading file: ' + error.message);
     }
   });
+
+app.post('/send-message',async(req,res)=>{
+    const {to = '9899580400', message} = req.body;
+    if(!message){
+        res.send("please enter a message");
+    }
+    try{
+        const response = await client.messages.create({
+            from:'whatsapp:+919899580400',
+            to:`whatsapp:+919599580400`,
+            body:message
+        })
+        res.send(response)
+    }
+    catch(err){
+        console.log(err);
+        
+        res.send(err)
+    }
+
+})
   
 app.post('/signup', async (req, res) => {
     try {
@@ -220,14 +267,18 @@ app.get('/',(req,res)=>{
 
 })
 
-app.post('/addProduct',adminAuth,(req,res)=>{
-    const {name,description,img,price,stock,title} = req.body;
-    if(!name || !description || !img || !price || !stock || !title){
-        return res.send({status:false, message:"name and description must"})
-    }
-    const newItem = {id:idCounter++,name,description}
-    items.push(newItem);
-    res.status(200).send({status:true, data:newItem});
+app.post('/addProduct',async(req,res)=>{
+    const {name,title,description,brand,rating,img,price,discount,stock,category} = req.body;
+
+    let data = new Product({name,title,description,brand,rating,img,price,discount,stock,category})
+    await data.save()
+    // if(!name || !description || !img || !price || !stock || !title){
+    //     return res.send({status:false, message:"name and description must"})
+    // }
+    res.send({status:true, message:"done"})
+    // const newItem = {id:idCounter++,name,description}
+    // items.push(newItem);
+    // res.status(200).send({status:true, data:newItem});
 })
 
 app.get('/item',(req,res)=>{
@@ -260,11 +311,11 @@ app.get('/itemDelete',(req,res)=>{
 app.post('/sendEmail',async (req, res) => {
     try{
         let mailOptions = {
-            from: 'preetam@dice-academy.com',  // Sender's address
-            to: req.body.email,   // Recipient's address
-            subject: 'new customer added/enqiure',         // Email subject
-            text: 'welcome to our website',  // Plain text body
-            html: '<p>Hello, this is a <strong>test email</strong> from Node.js using Nodemailer and Gmail.</p>'  // HTML body
+            from: 'preetam@dice-academy.com',
+            to: req.body.email,
+            subject: 'new customer added/enqiure',
+            text: 'welcome to our website',
+            html: '<p>Hello, this is a <strong>test email</strong> from Node.js using Nodemailer and Gmail.</p>'
           };
           transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
