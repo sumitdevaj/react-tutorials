@@ -7,15 +7,15 @@ const validator = require('validator');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const nodemailer = require('nodemailer');
-const twilio = require('twilio');
+// const twilio = require('twilio');
 const port =4000;
 require('dotenv').config()
 console.log(process.env.HELLO);
 const Product = require("./model/product.model")
 
-const accountSid = 'AC35e18f33978a1a53723b5c8b6e58dccb';
-const authToken = '244e2846922729add71756793aeb0e56';
-const client = twilio(accountSid, authToken);
+// const accountSid = 'AC35e18f33978a1a53723b5c8b6e58dccb';
+// const authToken = '244e2846922729add71756793aeb0e56';
+// const client = twilio(accountSid, authToken);
 
 const mongoose = require('mongoose');
 
@@ -143,26 +143,26 @@ app.post('/upload', upload, async (req, res) => {
     }
   });
 
-app.post('/send-message',async(req,res)=>{
-    const {to = '9899580400', message} = req.body;
-    if(!message){
-        res.send("please enter a message");
-    }
-    try{
-        const response = await client.messages.create({
-            from:'whatsapp:+919899580400',
-            to:`whatsapp:+919599580400`,
-            body:message
-        })
-        res.send(response)
-    }
-    catch(err){
-        console.log(err);
+// app.post('/send-message',async(req,res)=>{
+//     const {to = '9899580400', message} = req.body;
+//     if(!message){
+//         res.send("please enter a message");
+//     }
+//     try{
+//         const response = await client.messages.create({
+//             from:'whatsapp:+919899580400',
+//             to:`whatsapp:+919599580400`,
+//             body:message
+//         })
+//         res.send(response)
+//     }
+//     catch(err){
+//         console.log(err);
         
-        res.send(err)
-    }
+//         res.send(err)
+//     }
 
-})
+// })
   
 app.post('/signup', async (req, res) => {
     try {
