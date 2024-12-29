@@ -100,6 +100,24 @@ const adminAuth = (req, res, next) => {
     })
 }
 
+
+const uploaderFunction = async(req)=>{
+    const result =await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { resource_type: 'auto' },
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+        uploadStream.end(req.file.buffer);  // Pass the file buffer to Cloudinary
+      });
+      return result
+}
+
 app.post('/upload', upload, async (req, res) => {
     try {
       console.log('Form Data:', req.body,req.body?.file);  // Logs non-file form data (from Body-parser)
@@ -267,10 +285,18 @@ app.get('/',(req,res)=>{
 
 })
 
-app.post('/addProduct',async(req,res)=>{
-    const {name,title,description,brand,rating,img,price,discount,stock,category} = req.body;
+app.post('/addProduct',upload,async(req,res)=>{
+    const {name,title,description,brand,rating,price,discount,stock,category} = req.body;
+    // console.log(req.body,"eeedddd");
+    
+    let dd = uploaderFunction(req);
+    let url= await dd;
+    console.log(url.secure_url);
+    
 
-    let data = new Product({name,title,description,brand,rating,img,price,discount,stock,category})
+    
+
+    let data = new Product({name,title,description,brand,rating,img:url.secure_url,price,discount,stock,category})
     await data.save()
     // if(!name || !description || !img || !price || !stock || !title){
     //     return res.send({status:false, message:"name and description must"})
@@ -279,6 +305,53 @@ app.post('/addProduct',async(req,res)=>{
     // const newItem = {id:idCounter++,name,description}
     // items.push(newItem);
     // res.status(200).send({status:true, data:newItem});
+})
+app.get('/getProduct',async(req,res)=>{
+    try{
+    let products =await Product.find();
+    console.log(products);
+    }
+    catch(err){
+        console.log(err);
+        res.send(err)
+        
+    }
+})
+app.get('/getProduct/:id',async(req,res)=>{
+    try{
+    let products =await Product.find({_id:req.params.id});
+    console.log(products);
+    }
+    catch(err){
+        console.log(err);
+        res.send(err)
+        
+    }
+})
+
+app.put('/updateProduct',async (req,res)=>{
+    try{
+        console.log(req.query);
+        
+        let product = await Product.findOneAndUpdate({_id:req.query.id},req.body)
+        res.send(product)
+
+    }
+    catch(err){
+        res.send(err)
+    }
+})
+
+app.delete('/deleteProduct/:id', async(req, res) =>{
+    try{
+    let product =await Product.findByIdAndDelete({_id:req.params.id})
+    res.send(product)
+    }
+    catch(err){
+        console.log(err);
+        res.send(err)
+        
+    }
 })
 
 app.get('/item',(req,res)=>{
