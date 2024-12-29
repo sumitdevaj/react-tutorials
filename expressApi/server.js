@@ -12,6 +12,7 @@ const port =4000;
 require('dotenv').config()
 console.log(process.env.HELLO);
 const Product = require("./model/product.model")
+const User = require("./model/user.model")
 
 // const accountSid = 'AC35e18f33978a1a53723b5c8b6e58dccb';
 // const authToken = '244e2846922729add71756793aeb0e56';
@@ -184,32 +185,37 @@ app.post('/upload', upload, async (req, res) => {
   
 app.post('/signup', async (req, res) => {
     try {
-        const { userName, email,password,mobile } = req.body;
+        const { name, email,password,phone } = req.body;
         let role ='USER'
-        if(!userName || !email || !password || !mobile || !role) {
-            res.status(400).json({ message: "please provide details to signup"})
+        if(!name || !email || !password || !phone || !role) {
+           return res.status(400).json({ message: "please provide details to signup"})
         }
-        let isEamil = validator.isEamil(email);
+        let isEamil = validator.isEmail(email);
         if(!isEamil) {
-            res.status(400).json({message:"please enter a valid email address"})
+          return  res.status(400).json({message:"please enter a valid email address"})
         }
-        if (users.find(user => user.mobile === mobile)) {
-            return res.status(400).json({
-                message: "user already exists",
-            })
-        }
+        
         let isStrongPassword = validator.isStrongPassword(password);
         if(!isStrongPassword) {
-            res.status(400).json({message:"please enter format strong password "})
+          return  res.status(200).json({message:"please enter format strong password "})
         }
 
         let hashedPassword= await bcrypt.hash(password,10)
         console.log(hashedPassword);
+        let data =await User.find({email})
+        console.log(data?.length);
         
-        users.push({ userName, password:hashedPassword ,email,role,mobile});
-        res.status(201).json({ message: "user registered successfully" })
+        if(data?.length){
+           return res.send("user already exists")
+        }
+        let user=  new User({ name, email,password:hashedPassword,phone });
+        await user.save();        
+        
+         res.status(201).json({ message: "user registered successfully" })
     }
     catch (err) {
+        console.log(err);
+        
         res.status(500).json({ message: "Error while creating user" })
     }
 
@@ -252,18 +258,21 @@ app.get('/users',auth,(req,res)=>{
 })
 app.get('/login',async(req,res)=>{
     try{
-    let {mobile,password}= req.query;
-    console.log({mobile,password});
+    let {email,password}= req.query;
+    console.log({email,password});
     
-    let user =users.find(user => user.mobile === mobile);
-    if(! user){
-       return res.status(403).json({message: "User not found"})
+    let user = await User.find({email});
+    if(!user.length){
+        return res.send({message: 'User not found'})
     }
-    const validPassword = await bcrypt.compare(password,user.password)
+
+
+    
+    const validPassword = await bcrypt.compare(password,user[0].password)
     if(!validPassword){
        return res.status(400).json({message: "incorrect password"})
     }
-    const token = jwt.sign({userName:user.userName,role:user.role,mobile:user.mobile},jwt_secret,{expiresIn:'1h'});
+    const token = jwt.sign({userName:user[0].name,phone:user[0].phone},jwt_secret,{expiresIn:'1h'});
        return res.status(200).json({message:"login successful",token})
     
     }
